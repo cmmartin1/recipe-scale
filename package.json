@@ -1,0 +1,16 @@
+{
+  "name": "recipe-scale",
+  "version": "0.1.0",
+  "description": "Scale recipe ingredient quantities by a factor or a target serving count",
+  "type": "module",
+  "bin": {
+    "recipe-scale": "src/index.ts"
+  },
+  "scripts": {
+    "start": "node src/index.ts"
+  },
+  "engines": {
+    "node": ">=22.6.0"
+  },
+  "license": "MIT"
+}
