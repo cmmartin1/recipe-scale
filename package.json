@@ -7,7 +7,8 @@
     "recipe-scale": "src/index.ts"
   },
   "scripts": {
-    "start": "node src/index.ts"
+    "start": "node src/index.ts",
+    "test": "node --test src/*.test.ts"
   },
   "engines": {
     "node": ">=22.6.0"

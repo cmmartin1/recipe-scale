@@ -83,6 +83,15 @@ node src/index.ts cookies.recipe --servings 36
 Node 22.6+ needs the `--experimental-strip-types` flag for that; Node
 23.6+ runs `.ts` files like this without any flag.
 
+## Testing
+
+```
+npm test
+```
+
+Runs the test files in `src/` (`*.test.ts`) with Node's built-in test
+runner. Same Node version requirement as above.
+
 ## Status
 
 Early skeleton: quantity parsing, scaling, and fraction formatting work
