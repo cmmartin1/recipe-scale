@@ -2,6 +2,7 @@
 // two can be tested independently of file I/O.
 
 import type { Recipe, Ingredient } from './parser.ts';
+import { METRIC_UNITS } from './units.ts';
 
 export function scaleFactorFromServings(recipe: Recipe, targetServings: number): number {
   if (!recipe.servings || recipe.servings <= 0) {
@@ -60,8 +61,18 @@ export function formatQuantity(value: number): string {
   return whole > 0 ? `${whole} ${best[1]}` : best[1];
 }
 
+// Metric quantities are conventionally written as decimals ("237.5 ml"),
+// not kitchen fractions, so they skip formatQuantity's fraction snapping.
+function formatMetricQuantity(value: number): string {
+  if (value <= 0) return '0';
+  const rounded = Math.round(value * 10) / 10;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+}
+
 export function formatIngredient(ingredient: Ingredient): string {
   if (ingredient.quantity === null) return ingredient.name;
   const unit = ingredient.unit ? `${ingredient.unit} ` : '';
-  return `${formatQuantity(ingredient.quantity)} ${unit}${ingredient.name}`;
+  const isMetric = ingredient.unit !== null && METRIC_UNITS.has(ingredient.unit.toLowerCase().replace(/\.$/, ''));
+  const quantity = isMetric ? formatMetricQuantity(ingredient.quantity) : formatQuantity(ingredient.quantity);
+  return `${quantity} ${unit}${ingredient.name}`;
 }

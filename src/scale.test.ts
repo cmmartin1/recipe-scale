@@ -70,3 +70,18 @@ test('formatIngredient combines quantity, unit, and name', () => {
     'salt to taste',
   );
 });
+
+test('formatIngredient renders metric units as decimals instead of kitchen fractions', () => {
+  assert.equal(
+    formatIngredient({ raw: '', quantity: 473.176, unit: 'ml', name: 'milk' }),
+    '473.2 ml milk',
+  );
+  assert.equal(
+    formatIngredient({ raw: '', quantity: 1.360776, unit: 'kg', name: 'flour' }),
+    '1.4 kg flour',
+  );
+  assert.equal(
+    formatIngredient({ raw: '', quantity: 500, unit: 'g', name: 'butter' }),
+    '500 g butter',
+  );
+});
