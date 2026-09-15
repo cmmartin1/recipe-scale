@@ -76,3 +76,17 @@ export function formatIngredient(ingredient: Ingredient): string {
   const quantity = isMetric ? formatMetricQuantity(ingredient.quantity) : formatQuantity(ingredient.quantity);
   return `${quantity} ${unit}${ingredient.name}`;
 }
+
+// Renders a scaled recipe back into the plain-text format parseRecipe
+// reads, so --to-file output can be fed straight back into recipe-scale.
+export function formatRecipe(recipe: Recipe): string {
+  const lines: string[] = [`title: ${recipe.title}`];
+  if (recipe.servings !== null) {
+    lines.push(`servings: ${recipe.servings}`);
+  }
+  lines.push('', ...recipe.ingredients.map(formatIngredient));
+  if (recipe.notes.length > 0) {
+    lines.push('', ...recipe.notes.map((note) => `# ${note}`));
+  }
+  return lines.join('\n') + '\n';
+}

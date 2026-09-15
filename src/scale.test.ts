@@ -7,6 +7,7 @@ import {
   scaleRecipe,
   formatQuantity,
   formatIngredient,
+  formatRecipe,
 } from './scale.ts';
 
 test('scaleFactorFromServings divides target by the recipe yield', () => {
@@ -84,4 +85,30 @@ test('formatIngredient renders metric units as decimals instead of kitchen fract
     formatIngredient({ raw: '', quantity: 500, unit: 'g', name: 'butter' }),
     '500 g butter',
   );
+});
+
+test('formatRecipe renders a recipe back into parseable text', () => {
+  const recipe = parseRecipe(
+    'title: Test Cookies\nservings: 24\n1 cup flour\nsalt to taste\n# bake at 375F\n',
+  );
+  const text = formatRecipe(recipe);
+  assert.equal(
+    text,
+    'title: Test Cookies\nservings: 24\n\n1 cup flour\nsalt to taste\n\n# bake at 375F\n',
+  );
+});
+
+test('formatRecipe round-trips through parseRecipe', () => {
+  const recipe = parseRecipe('title: Test\nservings: 24\n2 cups flour\n1 tsp salt\n# note\n');
+  const scaled = scaleRecipe(recipe, 1.5);
+  const reparsed = parseRecipe(formatRecipe(scaled));
+  assert.equal(reparsed.title, scaled.title);
+  assert.equal(reparsed.servings, scaled.servings);
+  assert.equal(reparsed.ingredients[0].quantity, 3);
+  assert.equal(reparsed.ingredients[1].quantity, 1.5);
+});
+
+test('formatRecipe omits the servings line when the recipe has none', () => {
+  const recipe = parseRecipe('title: Test\n1 cup flour\n');
+  assert.equal(formatRecipe(recipe), 'title: Test\n\n1 cup flour\n');
 });

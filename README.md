@@ -10,7 +10,7 @@ serving count, and it prints the scaled ingredient list.
 ## Usage
 
 ```
-recipe-scale <file> [--factor N | --servings N] [--units metric|imperial]
+recipe-scale <file> [--factor N | --servings N] [--units metric|imperial] [--to-file PATH]
 ```
 
 Given `cookies.recipe`:
@@ -79,6 +79,14 @@ Volume converts to ml or l and weight (`lb`, `oz`, ...) converts to g or kg
 the number readable. Units with no metric equivalent, like `clove` or
 `pinch`, pass through unchanged.
 
+Write the result to a file instead of printing it, in the same format the
+input recipe file uses (so it can be fed back into `recipe-scale` later):
+
+```
+$ recipe-scale cookies.recipe --servings 36 --to-file cookies-36.recipe
+wrote scaled recipe to cookies-36.recipe
+```
+
 ## Recipe file format
 
 Plain text, one ingredient per line:
@@ -118,10 +126,11 @@ runner. Same Node version requirement as above.
 
 ## Status
 
-Early skeleton: quantity parsing, scaling, fraction formatting, and
-metric/imperial unit conversion work for straightforward recipe files.
-Writing the scaled recipe back to disk and more forgiving parsing of
-messy real-world recipes are not there yet.
+Early skeleton: quantity parsing, scaling, fraction formatting, metric/
+imperial unit conversion, and writing the scaled recipe back to disk work
+for straightforward recipe files. More forgiving parsing of messy
+real-world recipes (unicode fraction characters, multiple ingredient
+sections) is not there yet.
 
 ## License
 
