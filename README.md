@@ -94,7 +94,9 @@ Plain text, one ingredient per line:
 - `title: ...` and `servings: N` are optional header lines.
 - Ingredient lines start with a quantity: a whole number (`2`), a fraction
   (`3/4`), a mixed number (`2 1/4`), or a decimal (`1.5`), optionally
-  followed by a unit and then the ingredient name.
+  followed by a unit and then the ingredient name. Unicode fraction
+  characters work too, written alone (`¾ cup sugar`) or attached to a
+  whole number (`2¾ cups flour`, `2 ¾ cups flour`).
 - Lines with no leading quantity (`salt to taste`) are kept as-is and pass
   through unscaled.
 - Lines starting with `#` are notes (oven temperature, timing, technique)
@@ -126,11 +128,12 @@ runner. Same Node version requirement as above.
 
 ## Status
 
-Early skeleton: quantity parsing, scaling, fraction formatting, metric/
-imperial unit conversion, and writing the scaled recipe back to disk work
-for straightforward recipe files. More forgiving parsing of messy
-real-world recipes (unicode fraction characters, multiple ingredient
-sections) is not there yet.
+Early skeleton: quantity parsing (including unicode fraction characters),
+scaling, fraction formatting, metric/imperial unit conversion, and writing
+the scaled recipe back to disk work for straightforward recipe files.
+Recipe files with multiple ingredient sections (a "Dough" list and a
+"Filling" list, say) aren't handled yet, and output is a plain list rather
+than an aligned recipe card.
 
 ## License
 

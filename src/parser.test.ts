@@ -9,6 +9,29 @@ test('parseQuantity reads mixed numbers, fractions, decimals, and integers', () 
   assert.equal(parseQuantity('2'), 2);
 });
 
+test('parseQuantity reads unicode fraction characters, alone or as a mixed number', () => {
+  assert.equal(parseQuantity('¾'), 0.75);
+  assert.equal(parseQuantity('2¾'), 2.75);
+  assert.equal(parseQuantity('2 ¾'), 2.75);
+  assert.equal(parseQuantity('⅓'), 1 / 3);
+  assert.equal(parseQuantity('1½'), 1.5);
+});
+
+test('parseIngredientLine handles unicode fraction quantities', () => {
+  assert.deepEqual(parseIngredientLine('2¾ cups all-purpose flour'), {
+    raw: '2¾ cups all-purpose flour',
+    quantity: 2.75,
+    unit: 'cups',
+    name: 'all-purpose flour',
+  });
+  assert.deepEqual(parseIngredientLine('¾ cup granulated sugar'), {
+    raw: '¾ cup granulated sugar',
+    quantity: 0.75,
+    unit: 'cup',
+    name: 'granulated sugar',
+  });
+});
+
 test('parseIngredientLine splits quantity, unit, and name', () => {
   assert.deepEqual(parseIngredientLine('2 1/4 cups all-purpose flour'), {
     raw: '2 1/4 cups all-purpose flour',

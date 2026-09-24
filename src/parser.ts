@@ -36,12 +36,39 @@ const KNOWN_UNITS = new Set([
   'pint', 'pints', 'gallon', 'gallons',
 ]);
 
+// Unicode vulgar fraction characters, as they show up in copy-pasted
+// recipes ("2¾ cups", "¾ cup").
+const UNICODE_FRACTIONS: Record<string, number> = {
+  '¼': 1 / 4, '½': 1 / 2, '¾': 3 / 4,
+  '⅓': 1 / 3, '⅔': 2 / 3,
+  '⅕': 1 / 5, '⅖': 2 / 5, '⅗': 3 / 5, '⅘': 4 / 5,
+  '⅙': 1 / 6, '⅚': 5 / 6,
+  '⅐': 1 / 7,
+  '⅛': 1 / 8, '⅜': 3 / 8, '⅝': 5 / 8, '⅞': 7 / 8,
+  '⅑': 1 / 9,
+  '⅒': 1 / 10,
+};
+const UNICODE_FRACTION_CHARS = Object.keys(UNICODE_FRACTIONS).join('');
+
 // Matches a leading amount: a mixed number ("2 1/4"), a plain fraction
-// ("3/4"), a decimal ("1.5"), or a bare integer ("2").
-const QUANTITY_RE = /^(\d+\s+\d+\/\d+|\d+\/\d+|\d*\.\d+|\d+)\s*/;
+// ("3/4"), a decimal ("1.5"), a bare integer ("2"), or any of those forms
+// written with a unicode fraction character ("2¾", "2 ¾", "¾").
+const QUANTITY_RE = new RegExp(
+  `^(\\d+\\s*[${UNICODE_FRACTION_CHARS}]|\\d+\\s+\\d+/\\d+|\\d+/\\d+|\\d*\\.\\d+|\\d+|[${UNICODE_FRACTION_CHARS}])\\s*`,
+);
 
 export function parseQuantity(text: string): number {
   const trimmed = text.trim();
+
+  const unicodeMixed = trimmed.match(new RegExp(`^(\\d+)\\s*([${UNICODE_FRACTION_CHARS}])$`));
+  if (unicodeMixed) {
+    const [, whole, frac] = unicodeMixed;
+    return Number(whole) + UNICODE_FRACTIONS[frac];
+  }
+  if (trimmed in UNICODE_FRACTIONS) {
+    return UNICODE_FRACTIONS[trimmed];
+  }
+
   const mixed = trimmed.match(/^(\d+)\s+(\d+)\/(\d+)$/);
   if (mixed) {
     const [, whole, num, den] = mixed;
